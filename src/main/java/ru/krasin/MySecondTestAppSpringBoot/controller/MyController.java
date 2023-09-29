@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.krasin.MySecondTestAppSpringBoot.exception.UnsupportedCodeException;
 import ru.krasin.MySecondTestAppSpringBoot.exception.ValidationFailedException;
 import ru.krasin.MySecondTestAppSpringBoot.model.Request;
 import ru.krasin.MySecondTestAppSpringBoot.model.Response;
@@ -43,17 +44,25 @@ public class MyController {
                 .build();
 
         try {
+            if ("123".equals(request.getUid())) {
+                throw new UnsupportedCodeException("UnsupportedCode", "Значение UID равно 123");
+            }
             validationService.isValid(bindingResult);
+        } catch (UnsupportedCodeException e) {
+            response.setCode("failed");
+            response.setErrorCode(e.getErrorCode());
+            response.setErrorMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (ValidationFailedException e) {
             response.setCode("failed");
             response.setErrorCode("ValidationException");
             response.setErrorMessage("Ошибка валидации");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }catch (Exception e) {
+        } catch (Exception e) {
             response.setCode("failed");
             response.setErrorCode("UnknownException");
             response.setErrorMessage("Произошла непредвиденная ошибка");
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

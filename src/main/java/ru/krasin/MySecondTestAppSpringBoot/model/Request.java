@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.krasin.MySecondTestAppSpringBoot.service.Systems;
 
 import javax.validation.constraints.*;
 
@@ -20,7 +21,7 @@ public class Request {
     @Size(max = 32, message = "Максимальная длина поля operationUid - 32 символа")
     private String operationUid;
 
-    private String systemName;
+    private Systems systemName;
 
     @NotBlank(message = "Время создания сообщения обязательно")
     private String systemTime;

@@ -5,5 +5,5 @@ import ru.krasin.MyThirdTestAppSpringBoot.model.Response;
 
 @Service
 public interface ModifyResponseService {
-    Response modify(Response response);
+    void modify(Response response);
 }

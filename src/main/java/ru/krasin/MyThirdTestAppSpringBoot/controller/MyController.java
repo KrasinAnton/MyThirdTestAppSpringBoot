@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.krasin.MyThirdTestAppSpringBoot.exception.UnsupportedCodeException;
 import ru.krasin.MyThirdTestAppSpringBoot.exception.ValidationFailedException;
 import ru.krasin.MyThirdTestAppSpringBoot.model.*;
+import ru.krasin.MyThirdTestAppSpringBoot.service.ModifyRequestService;
 import ru.krasin.MyThirdTestAppSpringBoot.service.ModifyResponseService;
+import ru.krasin.MyThirdTestAppSpringBoot.service.ModifySourceRequestService;
 import ru.krasin.MyThirdTestAppSpringBoot.service.ValidationService;
 import ru.krasin.MyThirdTestAppSpringBoot.util.DateTimeUtil;
 
@@ -25,13 +27,18 @@ import java.util.Date;
 public class MyController {
     private final ValidationService validationService;
     private final ModifyResponseService modifyResponseService;
+    private final ModifyRequestService modifyRequestService;
+    private final ModifySourceRequestService modifySourceRequestService; // Добавлен сервис
 
     @Autowired
     public MyController(ValidationService validationService,
-                        @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService) {
+                        @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService,
+                        ModifyRequestService modifyRequestService,
+                        ModifySourceRequestService modifySourceRequestService) { // Внедрен сервис ModifySourceRequestService
         this.validationService = validationService;
         this.modifyResponseService = modifyResponseService;
-
+        this.modifyRequestService = modifyRequestService;
+        this.modifySourceRequestService = modifySourceRequestService; // Инициализирован сервис
     }
 
     @PostMapping(value = "/feedback")
@@ -42,6 +49,9 @@ public class MyController {
             log.error("Received request with uid '123', throwing UnsupportedCodeException");
             throw new UnsupportedCodeException();
         }
+
+        // Используйте сервис ModifySourceRequestService для изменения поля source
+        modifySourceRequestService.modify(request);
 
         Response response = createResponse(request);
 
@@ -55,7 +65,7 @@ public class MyController {
         }
 
         modifyResponseService.modify(response);
-
+        modifyRequestService.modify(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

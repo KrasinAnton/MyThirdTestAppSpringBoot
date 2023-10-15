@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.krasin.MySecondTestAppSpringBoot.exception.UnsupportedCodeException;
 import ru.krasin.MySecondTestAppSpringBoot.exception.ValidationFailedException;
 import ru.krasin.MySecondTestAppSpringBoot.model.*;
+import ru.krasin.MySecondTestAppSpringBoot.service.ModifyRequestService;
 import ru.krasin.MySecondTestAppSpringBoot.service.ModifyResponseService;
 import ru.krasin.MySecondTestAppSpringBoot.service.ValidationService;
 import ru.krasin.MySecondTestAppSpringBoot.util.DateTimeUtil;
@@ -23,19 +24,22 @@ import java.util.Date;
 @Slf4j
 @RestController
 public class MyController {
-    private final ValidationService validateService;
+    private final ValidationService validationService;
     private final ModifyResponseService modifyResponseService;
+    private final ModifyRequestService modifyRequestService;
 
     @Autowired
     public MyController(ValidationService validationService,
-                        @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService) {
-        this.validateService = validationService;
+                        @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService,
+                        ModifyRequestService modifyRequestService) {
+        this.validationService = validationService;
         this.modifyResponseService = modifyResponseService;
+        this.modifyRequestService = modifyRequestService;
     }
 
     @PostMapping(value = "/feedback")
     public ResponseEntity<Response> feedback(@Valid @RequestBody Request request, BindingResult bindingResult) throws UnsupportedCodeException {
-        log.info("Received request: {}", request);
+        log.info("request: {}", request);
 
         if ("123".equals(request.getUid())) {
             log.error("Received request with uid '123', throwing UnsupportedCodeException");
@@ -45,7 +49,7 @@ public class MyController {
         Response response = createResponse(request);
 
         try {
-            validateService.isValid(bindingResult);
+            validationService.isValid(bindingResult);
         } catch (ValidationFailedException e) {
             log.error("Validation failed: {}", e.getMessage());
             return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);
@@ -54,6 +58,7 @@ public class MyController {
         }
 
         modifyResponseService.modify(response);
+        modifyRequestService.modify(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

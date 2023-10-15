@@ -13,25 +13,29 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Request {
-    @NotBlank(message = "Поле uid обязательно для заполнения")
-    @Size(max = 32, message = "Максимальная длина поля uid - 32 символа")
-    private String uid;
 
-    @NotBlank(message = "Поле operationUid обязательно для заполнения")
-    @Size(max = 32, message = "Максимальная длина поля operationUid - 32 символа")
-    private String operationUid;
+    @NotBlank(message = "Уникальный идентификатор сообщения обязателен")
+    @Size(max = 32, message = "Уникальный идентификатор сообщения должен содержать не более 32 символов")
+    private String uid;  // Уникальный идентификатор сообщения
 
-    private Systems systemName;
+    @NotBlank(message = "Уникальный идентификатор операции обязателен")
+    @Size(max = 32, message = "Уникальный идентификатор операции должен содержать не более 32 символов")
+    private String operationUid;  // Уникальный идентификатор операции
+
+    private String systemName;  // Изменили тип на перечисление Systems
 
     @NotBlank(message = "Время создания сообщения обязательно")
-    private String systemTime;
+    private String systemTime;  // Время создания сообщения
 
     private String source;
+    private Positions position;
+    private Double salary;
+    private Double bonus;
+    private Integer workDays;
 
-    @NotNull(message = "Поле communicationId обязательно для заполнения")
-    @Min(value = 1, message = "Значение поля communicationId должно быть не менее 1")
-    @Max(value = 100000, message = "Значение поля communicationId должно быть не более 100000")
-    private int communicationId;
+    @Min(value = 1, message = "Уникальный идентификатор коммуникации должен быть не менее 1")
+    @Max(value = 100000, message = "Уникальный идентификатор коммуникации должен быть не более 100000")
+    private int communicationId;  // Уникальный идентификатор коммуникации
 
     private int templateId;
     private int productCode;
@@ -42,7 +46,7 @@ public class Request {
         return "{" +
                 "uid='" + uid + '\'' +
                 ", operationUid='" + operationUid + '\'' +
-                ", systemName='" + systemName + '\'' +
+                ", systemName='" + systemName + '\'' +  // Изменили тип на перечисление Systems
                 ", systemTime='" + systemTime + '\'' +
                 ", source='" + source + '\'' +
                 ", communicationId=" + communicationId +
@@ -50,6 +54,5 @@ public class Request {
                 ", productCode=" + productCode +
                 ", smsCode=" + smsCode +
                 '}';
-
     }
 }

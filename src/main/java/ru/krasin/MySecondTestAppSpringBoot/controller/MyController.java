@@ -34,9 +34,7 @@ public class MyController {
     }
 
     @PostMapping(value = "/feedback")
-    public ResponseEntity<Response> feedback(@Valid @RequestBody Request request,
-                                             BindingResult bindingResult) throws UnsupportedCodeException {
-
+    public ResponseEntity<Response> feedback(@Valid @RequestBody Request request, BindingResult bindingResult) throws UnsupportedCodeException {
         log.info("Received request: {}", request);
 
         if ("123".equals(request.getUid())) {
@@ -44,7 +42,24 @@ public class MyController {
             throw new UnsupportedCodeException();
         }
 
-        Response response = Response.builder()
+        Response response = createResponse(request);
+
+        try {
+            validateService.isValid(bindingResult);
+        } catch (ValidationFailedException e) {
+            log.error("Validation failed: {}", e.getMessage());
+            return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(createErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        modifyResponseService.modify(response);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private Response createResponse(Request request) {
+        return Response.builder()
                 .uid(request.getUid())
                 .operationUid(request.getOperationUid())
                 .systemTime(DateTimeUtil.getCustomFormat().format(new Date()))
@@ -52,50 +67,25 @@ public class MyController {
                 .errorCode(ErrorCodes.EMPTY)
                 .errorMessage(ErrorMessages.EMPTY)
                 .build();
+    }
 
-        log.info("Generated response: {}", response);
-
-        try {
-            validateService.isValid(bindingResult);
-        } catch (ValidationFailedException e) {
-            log.error("Validation failed: {}", e.getMessage());
-            response.setCode(Codes.FAILED);
+    private Response createErrorResponse(Exception e) {
+        log.error("An exception occurred: {}", e.getMessage());
+        Response response = Response.builder()
+                .code(Codes.FAILED)
+                .errorCode(ErrorCodes.UNKNOWN_EXCEPTION)
+                .errorMessage(ErrorMessages.UNKNOWN)
+                .build();
+        if (e instanceof ValidationFailedException) {
             response.setErrorCode(ErrorCodes.VALIDATION_EXCEPTION);
             response.setErrorMessage(ErrorMessages.VALIDATION);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("An unknown exception occurred: {}", e.getMessage());
-            response.setCode(Codes.FAILED);
-            response.setErrorCode(ErrorCodes.UNKNOWN_EXCEPTION);
-            response.setErrorMessage(ErrorMessages.UNKNOWN);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        modifyResponseService.modify(response);
-        log.info("Modified response: {}", response);
-
-        return new ResponseEntity<>(modifyResponseService.modify(response), HttpStatus.OK);
+        return response;
     }
 
-    @ExceptionHandler(ValidationFailedException.class)
-    public ResponseEntity<Response> handleValidationFailedException(ValidationFailedException ex) {
-        Response response = Response.builder()
-                .code(Codes.FAILED)
-                .errorCode(ErrorCodes.VALIDATION_EXCEPTION)
-                .errorMessage(ErrorMessages.valueOf(ex.getMessage()))
-                .build();
-        log.error("Handling ValidationFailedException: {}", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(UnsupportedCodeException.class)
-    public ResponseEntity<Response> handleUnsupportedCodeException(UnsupportedCodeException ex) {
-        Response response = Response.builder()
-                .code(Codes.FAILED)
-                .errorCode(ErrorCodes.UNSUPPORTED_EXCEPTION)
-                .errorMessage(ErrorMessages.valueOf(ex.getMessage()))
-                .build();
-        log.error("Handling UnsupportedCodeException: {}", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler({ValidationFailedException.class, UnsupportedCodeException.class})
+    public ResponseEntity<Response> handleException(Exception ex) {
+        log.error("Handling exception: {}", ex.getMessage());
+        return new ResponseEntity<>(createErrorResponse(ex), HttpStatus.BAD_REQUEST);
     }
 }

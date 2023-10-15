@@ -9,6 +9,7 @@ import ru.krasin.MySecondTestAppSpringBoot.model.Request;
 
 @Service
 public class ModifySystemNameRequestService implements ModifyRequestService{
+
     @Override
     public void modify(Request request) {
         request.setSystemName("Service 1");

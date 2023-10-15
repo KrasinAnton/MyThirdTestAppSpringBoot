@@ -1,4 +1,4 @@
-package ru.krasin.MySecondTestAppSpringBoot.controller;
+package ru.krasin.MyThirdTestAppSpringBoot.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.krasin.MySecondTestAppSpringBoot.exception.UnsupportedCodeException;
-import ru.krasin.MySecondTestAppSpringBoot.exception.ValidationFailedException;
-import ru.krasin.MySecondTestAppSpringBoot.model.*;
-import ru.krasin.MySecondTestAppSpringBoot.service.ModifyResponseService;
-import ru.krasin.MySecondTestAppSpringBoot.service.ValidationService;
-import ru.krasin.MySecondTestAppSpringBoot.util.DateTimeUtil;
+import ru.krasin.MyThirdTestAppSpringBoot.exception.UnsupportedCodeException;
+import ru.krasin.MyThirdTestAppSpringBoot.exception.ValidationFailedException;
+import ru.krasin.MyThirdTestAppSpringBoot.model.*;
+import ru.krasin.MyThirdTestAppSpringBoot.service.ModifyResponseService;
+import ru.krasin.MyThirdTestAppSpringBoot.service.ValidationService;
+import ru.krasin.MyThirdTestAppSpringBoot.util.DateTimeUtil;
 
 import javax.validation.Valid;
 import java.util.Date;

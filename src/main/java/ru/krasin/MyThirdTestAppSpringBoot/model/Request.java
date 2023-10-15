@@ -1,10 +1,9 @@
-package ru.krasin.MySecondTestAppSpringBoot.model;
+package ru.krasin.MyThirdTestAppSpringBoot.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.krasin.MySecondTestAppSpringBoot.service.Systems;
 
 import javax.validation.constraints.*;
 

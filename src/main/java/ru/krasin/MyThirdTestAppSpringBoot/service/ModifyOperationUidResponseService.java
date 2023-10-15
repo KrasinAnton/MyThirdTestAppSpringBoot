@@ -1,8 +1,8 @@
-package ru.krasin.MySecondTestAppSpringBoot.service;
+package ru.krasin.MyThirdTestAppSpringBoot.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.krasin.MySecondTestAppSpringBoot.model.Response;
+import ru.krasin.MyThirdTestAppSpringBoot.model.Response;
 
 import java.util.UUID;
 

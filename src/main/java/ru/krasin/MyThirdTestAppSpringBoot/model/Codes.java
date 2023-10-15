@@ -1,17 +1,14 @@
-package ru.krasin.MySecondTestAppSpringBoot.model;
+package ru.krasin.MyThirdTestAppSpringBoot.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ErrorCodes {
+public enum Codes {
 
-    EMPTY(""),
-    VALIDATION_EXCEPTION("ValidationException"),
-    UNKNOWN_EXCEPTION("UnknownException"),
-    UNSUPPORTED_EXCEPTION("UnsupportedException"),;
+    SUCCESS("success"),
+    FAILED("failed");
 
     private final String name;
-
-    ErrorCodes(String name) {
+    Codes(String name) {
         this.name = name;
     }
 

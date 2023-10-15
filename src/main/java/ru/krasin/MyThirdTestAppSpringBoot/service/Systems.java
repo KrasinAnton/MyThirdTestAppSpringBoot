@@ -1,4 +1,4 @@
-package ru.krasin.MySecondTestAppSpringBoot.service;
+package ru.krasin.MyThirdTestAppSpringBoot.service;
 
 public enum Systems {
     ERP("Enterprise Resource Planning"),

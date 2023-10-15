@@ -1,4 +1,4 @@
-package ru.krasin.MySecondTestAppSpringBoot;
+package ru.krasin.MyThirdTestAppSpringBoot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

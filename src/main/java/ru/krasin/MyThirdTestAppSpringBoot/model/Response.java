@@ -1,4 +1,4 @@
-package ru.krasin.MySecondTestAppSpringBoot.model;
+package ru.krasin.MyThirdTestAppSpringBoot.model;
 
 import lombok.Builder;
 import lombok.Data;
